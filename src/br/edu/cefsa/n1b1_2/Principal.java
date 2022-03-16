@@ -30,31 +30,34 @@ public class Principal {
 	public static List<String> analisaLinhas(List<String> linhas) throws Exception {
 
 		for (String linha : linhas) {
-			Stack<String> pilha = new Stack<String>();
 
-			for (int i = 0; i < linha.length(); i++) {
-				var letra = String.valueOf(linha.charAt(i));
+			Boolean valido = analisa(linha);
 
-				if (!pilha.empty()) {
-					if (pilha.peek() == "<" && letra == ">") {
-						pilha.pop();
-					}
-					if (pilha.peek() == "[" && letra == "]") {
-						pilha.pop();
-					}
-					if (pilha.peek() == "{" && letra == "}") {
-						pilha.pop();
-					}
-					if (pilha.peek() == "(" && letra == ")") {
-						pilha.pop();
-					}
-				} else {
-					pilha.push(letra);
-				}
+//			Stack<String> pilha = new Stack<String>();
+//
+//			for (int i = 0; i < linha.length(); i++) {
+//				var letra = String.valueOf(linha.charAt(i));
+//
+//				if (!pilha.empty()) {
+//					if (pilha.peek() == "<" && letra == ">") {
+//						pilha.pop();
+//					}
+//					if (pilha.peek() == "[" && letra == "]") {
+//						pilha.pop();
+//					}
+//					if (pilha.peek() == "{" && letra == "}") {
+//						pilha.pop();
+//					}
+//					if (pilha.peek() == "(" && letra == ")") {
+//						pilha.pop();
+//					}
+//				} else {
+//					pilha.push(letra);
+//				}
+//
+//			}
 
-			}
-
-			if (pilha.empty()) {
+			if (valido) {
 				linha = linha + " - OK";
 			} else {
 				linha = linha + " - Inválido";
@@ -64,6 +67,30 @@ public class Principal {
 		}
 
 		return linhas;
+	}
+
+	private static Boolean analisa(String linha) {
+		Stack<Character> stack = new Stack<Character>();
+		for (int i = 0; i < linha.length(); i++) {
+			char c = linha.charAt(i);
+			if (c == '[' || c == '(' || c == '{') {
+				stack.push(c);
+			} else if (c == ']') {
+				if (stack.isEmpty() || stack.pop() != '[') {
+					return false;
+				}
+			} else if (c == ')') {
+				if (stack.isEmpty() || stack.pop() != '(') {
+					return false;
+				}
+			} else if (c == '}') {
+				if (stack.isEmpty() || stack.pop() != '{') {
+					return false;
+				}
+			}
+
+		}
+		return stack.isEmpty();
 	}
 
 	public static void escreveArquivoSaida(List<String> linhas) throws Exception {
